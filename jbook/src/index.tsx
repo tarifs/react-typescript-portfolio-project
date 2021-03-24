@@ -1,38 +1,40 @@
 import * as esbuild from 'esbuild-wasm';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 const App = () => {
-  const [input, setInput] = useState('');
-  const [code, setCode] = useState('');
+    const ref = useRef<any>();
+    const [input, setInput] = useState('');
+    const [code, setCode] = useState('');
 
-  const startService = async () => {
-    const service = await esbuild.startService({
-      worker: true,
-      wasmURL: '/esbuild.wasm',
-    });
-    console.log(service);
-  };
-  useEffect(() => {
-    startService();
-  }, []);
+    const startService = async () => {
+        ref.current = await esbuild.startService({
+            worker: true,
+            wasmURL: '/esbuild.wasm',
+        });
+    };
+    useEffect(() => {
+        startService();
+    }, []);
 
-  const onClick = () => {
-    console.log(input);
-  };
+    const onClick = () => {
+        if (!ref.current) {
+            return;
+        }
+    };
 
-  return (
-    <div>
+    return (
+        <div>
       <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
       ></textarea>
-      <div>
-        <button onClick={onClick}>Submit</button>
-      </div>
-      <pre>{code}</pre>
-    </div>
-  );
+            <div>
+                <button onClick={onClick}>Submit</button>
+            </div>
+            <pre>{code}</pre>
+        </div>
+    );
 };
 
 ReactDOM.render(<App />, document.querySelector('#root'));
