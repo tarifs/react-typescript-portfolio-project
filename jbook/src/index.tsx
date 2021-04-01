@@ -12,7 +12,7 @@ const App = () => {
   const startService = async () => {
     ref.current = await esbuild.startService({
       worker: true,
-      wasmURL: '/esbuild.wasm',
+      wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm',
     });
   };
   useEffect(() => {
@@ -28,10 +28,7 @@ const App = () => {
       entryPoints: ['index.js'],
       bundle: true,
       write: false,
-      plugins: [
-        unpkgPathPlugin(),
-        fetchPlugin(input)
-      ],
+      plugins: [unpkgPathPlugin(), fetchPlugin(input)],
       define: {
         'process.env.NODE_ENV': '"production"',
         global: 'window',
@@ -44,16 +41,16 @@ const App = () => {
   };
 
   return (
-      <div>
+    <div>
       <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       ></textarea>
-        <div>
-          <button onClick={onClick}>Submit</button>
-        </div>
-        <pre>{code}</pre>
+      <div>
+        <button onClick={onClick}>Submit</button>
       </div>
+      <pre>{code}</pre>
+    </div>
   );
 };
 
